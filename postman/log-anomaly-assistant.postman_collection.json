@@ -1,0 +1,65 @@
+{
+  "info": {
+    "_postman_id": "d3b7a80f-5523-4ba8-8559-98230d58ecfd",
+    "name": "Log Anomaly Assistant",
+    "description": "Requests for the local Log Anomaly Assistant HTTP API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get service statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/stats"
+      },
+      "response": []
+    },
+    {
+      "name": "Get anomalies",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/anomalies"
+      },
+      "response": []
+    },
+    {
+      "name": "Ask about log evidence",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"Şüpheli login aktivitesi var mı?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/ask"
+      },
+      "response": []
+    }
+  ]
+}
