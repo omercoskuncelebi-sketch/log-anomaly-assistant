@@ -2,12 +2,24 @@
   "info": {
     "_postman_id": "d3b7a80f-5523-4ba8-8559-98230d58ecfd",
     "name": "Log Anomaly Assistant",
-    "description": "Requests for the local Log Anomaly Assistant HTTP API.",
+    "description": "Import the accompanying Local environment, select it, start the application, then run these requests. No API key belongs in Postman; OPENAI_API_KEY is read by the server process.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
       "name": "Get service statistics",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns a statistics array', () => pm.expect(Array.isArray(pm.response.json())).to.eql(true));"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [
@@ -16,12 +28,25 @@
             "value": "application/json"
           }
         ],
-        "url": "{{baseUrl}}/stats"
+        "url": "{{baseUrl}}/stats",
+        "description": "Per-service request count, 5xx rate, p95 latency, and UTC hourly distribution."
       },
       "response": []
     },
     {
-      "name": "Get anomalies",
+      "name": "Get detected anomalies",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns an anomaly array', () => pm.expect(Array.isArray(pm.response.json())).to.eql(true));"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [
@@ -30,12 +55,25 @@
             "value": "application/json"
           }
         ],
-        "url": "{{baseUrl}}/anomalies"
+        "url": "{{baseUrl}}/anomalies",
+        "description": "Evidence-backed deterministic anomalies from the supplied log file."
       },
       "response": []
     },
     {
-      "name": "Ask about log evidence",
+      "name": "Ask - suspicious login activity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns a non-empty answer', () => pm.expect(pm.response.json().answer).to.be.a('string').and.not.empty);"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -57,7 +95,128 @@
             }
           }
         },
-        "url": "{{baseUrl}}/ask"
+        "url": "{{baseUrl}}/ask",
+        "description": "Demonstrates the authentication-burst evidence path."
+      },
+      "response": []
+    },
+    {
+      "name": "Ask - checkout latency or errors",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns a non-empty answer', () => pm.expect(pm.response.json().answer).to.be.a('string').and.not.empty);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"checkout servisinin yavaşladığı veya hata verdiği bir zaman aralığı var mı, nedeni ne olabilir?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/ask",
+        "description": "Demonstrates service alias handling and the checkout server-error burst."
+      },
+      "response": []
+    },
+    {
+      "name": "Ask - missing scheduled job",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns a non-empty answer', () => pm.expect(pm.response.json().answer).to.be.a('string').and.not.empty);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"Bugün çalışması gereken ancak çalışmayan bir iş var mı?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/ask",
+        "description": "Demonstrates the explicitly supported missing scheduled-job finding."
+      },
+      "response": []
+    },
+    {
+      "name": "Ask - unknown information",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns the exact unknown-information answer', () => pm.expect(pm.response.json().answer).to.eql('Bu bilgi log verisinde mevcut değil.'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"Hangi veritabanı kullanılıyor?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/ask",
+        "description": "Demonstrates the deterministic unknown-information safeguard."
       },
       "response": []
     }
