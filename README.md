@@ -6,7 +6,7 @@
 
 Uygulama classpath'teki JSONL dosyasını yerelde okur; servis istatistiklerini ve deterministik anomalileri hesaplar. `/ask`, soruya ilgili sınırlı istatistik/anomali özetlerini ve küçük kanıt örneklerini seçer. Tam JSONL dosyası veya ham `LogEntry` nesneleri LLM'e gönderilmez. E-posta `user1071@example.com` → `u***@example.com`, IPv4 `185.220.101.47` → `185.220.xxx.xxx` olarak maskelenir; IPv6 adresleri de maskelenir. `LlmClient` sağlayıcı bağımlılığını ayırır.
 
-`OPENAI_API_KEY` yoksa dış çağrı yapmayan deterministik `FallbackLlmClient` kullanılır; bu gerçek bir LLM değildir. Anahtar varsa `OpenAiLlmClient` yalnızca maskelenmiş, kompakt prompt'u OpenAI'ye gönderir. Varsayılan model `gpt-4o-mini`dir ve `OPENAI_MODEL` ile değiştirilebilir. Örnek: `export OPENAI_API_KEY='...'; export OPENAI_MODEL='gpt-4o-mini'; mvn spring-boot:run`.
+`OPENAI_API_KEY` yoksa dış çağrı yapmayan deterministik `FallbackLlmClient` kullanılır; bu gerçek bir LLM değildir. Anahtar varsa `OpenAiLlmClient` yalnızca maskelenmiş, kompakt prompt'u OpenAI'ye gönderir. Varsayılan model `gpt-4o-mini`dir ve `OPENAI_MODEL` ile değiştirilebilir. `LLM_API_KEY`, `LLM_MODEL` ve `LLM_BASE_URL` OpenAI-uyumlu sağlayıcılar için desteklenen alternatiflerdir ve varsa önceliklidir. Örnek: `export OPENAI_API_KEY='...'; export OPENAI_MODEL='gpt-4o-mini'; mvn spring-boot:run`.
 
 İki milyon satır için giriş stream edilir, servis/saat metrikleri önceden toplanır, zaman ve servisle bölümleme veya indeksleme yapılır, dedektör kanıt pencereleri sınırlandırılır; LLM'e yalnızca bu özetler gönderilir. Geliştirme promptları `PROMPTS.md` dosyasındadır.
 
