@@ -260,8 +260,13 @@ public class QuestionService {
         appendAnomalies(evidence, anomalies);
 
         return "Kullanıcı sorusu: " + question + "\n"
-                + "Aşağıdaki doğrulanmış yerel log kanıtlarını kullanarak en fazla üç kısa Türkçe cümleyle yanıt ver. "
-                + "Yanıt taslağını temel al ve yalnızca son kullanıcıya yönelik yanıtı üret.\n"
+                + "Aşağıdaki doğrulanmış yerel log kanıtlarını kullanarak en fazla dört kısa Türkçe cümleyle "
+                + "son kullanıcıya yönelik yanıt üret. Yanıt taslağı, korunması gereken doğrulanmış olgu özetidir; "
+                + "aynı metni tekrar etmek yerine doğal biçimde yeniden yazabilirsin.\n"
+                + "Kanıttan mantıksal olarak çıkan en fazla bir temkinli yorum ekleyebilirsin. Bu cümle \"Olası yorum:\" "
+                + "ile başlamalı, olasılık dili kullanmalı (ör. \"işaret ediyor\", \"incelenmeli\") ve yalnızca verilen "
+                + "kanıta dayanmalıdır. Kesin kök neden veya loglarda olmayan bir olgu yazma. Gerekirse en fazla bir "
+                + "\"Önerilen inceleme:\" cümlesiyle, kanıta bağlı somut bir sonraki adımı belirt.\n"
                 + "'Kanıt:' başlığını, kanıt satırlarını, hourlyDistribution nesnesini veya ham alan listelerini aynen "
                 + "tekrar etme. Anomali yanıtlarında servis, olay sayısı, zaman aralığı ve mevcutsa en fazla bir örnek "
                 + "traceId belirt. IP, e-posta, kullanıcı kimliği veya kesin nedensellik iddiası yazma.\n"

@@ -110,7 +110,10 @@ class QuestionServiceTest {
         assertFalse(prompt.getValue().contains("user1071@example.com"));
         assertFalse(prompt.getValue().contains("185.220.101.47"));
         assertTrue(prompt.getValue().contains("Kanıt:' başlığını"));
-        assertTrue(prompt.getValue().contains("en fazla üç kısa Türkçe cümleyle"));
+        assertTrue(prompt.getValue().contains("en fazla dört kısa Türkçe cümleyle"));
+        assertTrue(prompt.getValue().contains("Olası yorum:"));
+        assertTrue(prompt.getValue().contains("Önerilen inceleme:"));
+        assertTrue(prompt.getValue().contains("loglarda olmayan bir olgu yazma"));
     }
 
     @Test

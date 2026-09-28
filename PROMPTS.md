@@ -6,3 +6,4 @@
 - Keep the implementation interview-friendly, do not upload the full log file to an LLM, and report only evidence supported by the logs.
 - Add an optional OpenAI-backed client selected by `OPENAI_API_KEY`, while retaining a deterministic no-network fallback.
 - Review the assessment brief against the implementation; keep answers evidence-based and support its Turkish example questions.
+- Let the external LLM add one clearly labeled, evidence-grounded hypothesis and one practical next investigation step, without turning hypotheses into facts.
