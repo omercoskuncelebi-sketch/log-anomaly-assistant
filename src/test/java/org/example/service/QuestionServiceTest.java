@@ -109,6 +109,8 @@ class QuestionServiceTest {
         assertTrue(prompt.getValue().contains("185.220.xxx.xxx"));
         assertFalse(prompt.getValue().contains("user1071@example.com"));
         assertFalse(prompt.getValue().contains("185.220.101.47"));
+        assertTrue(prompt.getValue().contains("Kanıt:' başlığını"));
+        assertTrue(prompt.getValue().contains("en fazla üç kısa Türkçe cümleyle"));
     }
 
     @Test

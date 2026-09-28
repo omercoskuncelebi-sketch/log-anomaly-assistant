@@ -56,7 +56,7 @@ public class QuestionService {
         }
 
         String answerDraft = buildAnswerDraft(relevantStats, relevantAnomalies);
-        String prompt = buildPrompt(question, answerDraft, relevantStats, relevantAnomalies);
+        String prompt = buildPrompt(question, answerDraft, relevantStats, relevantAnomalies, topic);
         String answer = llmClient.ask(piiMasker.mask(prompt));
 
         return answer == null || answer.isBlank() ? UNKNOWN_INFORMATION_ANSWER : answer;
@@ -252,21 +252,24 @@ public class QuestionService {
             String question,
             String answerDraft,
             List<ServiceStats> stats,
-            List<Anomaly> anomalies
+            List<Anomaly> anomalies,
+            QuestionTopic topic
     ) {
         StringBuilder evidence = new StringBuilder();
-        appendStats(evidence, stats);
+        appendStats(evidence, stats, topic);
         appendAnomalies(evidence, anomalies);
 
         return "Kullanıcı sorusu: " + question + "\n"
-                + "Yalnızca aşağıdaki doğrulanmış yerel log kanıtlarını kullanarak kısa, Türkçe bir yanıt ver. "
-                + "Bulguları kesin nedensellik olarak sunma. Anomali yanıtlarında servis, olay sayısı, zaman aralığı "
-                + "ve mevcutsa örnek traceId belirt.\n"
+                + "Aşağıdaki doğrulanmış yerel log kanıtlarını kullanarak en fazla üç kısa Türkçe cümleyle yanıt ver. "
+                + "Yanıt taslağını temel al ve yalnızca son kullanıcıya yönelik yanıtı üret.\n"
+                + "'Kanıt:' başlığını, kanıt satırlarını, hourlyDistribution nesnesini veya ham alan listelerini aynen "
+                + "tekrar etme. Anomali yanıtlarında servis, olay sayısı, zaman aralığı ve mevcutsa en fazla bir örnek "
+                + "traceId belirt. IP, e-posta, kullanıcı kimliği veya kesin nedensellik iddiası yazma.\n"
                 + "Yanıt taslağı:\n" + answerDraft + "\n"
                 + "Kanıt:\n" + evidence;
     }
 
-    private void appendStats(StringBuilder evidence, List<ServiceStats> stats) {
+    private void appendStats(StringBuilder evidence, List<ServiceStats> stats, QuestionTopic topic) {
         int limit = Math.min(3, stats.size());
         for (int index = 0; index < limit; index++) {
             ServiceStats stat = stats.get(index);
@@ -274,9 +277,11 @@ public class QuestionService {
                     .append(", requestCount=").append(stat.requestCount())
                     .append(", serverErrorCount=").append(stat.serverErrorCount())
                     .append(", serverErrorRate=").append(stat.serverErrorRate())
-                    .append(", p95LatencyMs=").append(stat.p95LatencyMs())
-                    .append(", hourlyDistribution=").append(stat.hourlyDistribution())
-                    .append('\n');
+                    .append(", p95LatencyMs=").append(stat.p95LatencyMs());
+            if (topic == QuestionTopic.STATISTICS) {
+                evidence.append(", hourlyDistribution=").append(stat.hourlyDistribution());
+            }
+            evidence.append('\n');
         }
     }
 
